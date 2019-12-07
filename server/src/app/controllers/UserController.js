@@ -2,10 +2,13 @@ import User from '../models/Users';
 
 class UserController {
   async store(req, res) {
-    if (req.body.email === 'wagner@gmail.com') {
-      return res.status(400).json({ error: 'E-mail ruim ' });
-    }
+    const { email } = req.body;
 
+    const checkEmail = await User.findOne({ where: { email } });
+
+    if (checkEmail) {
+      return res.status(400).json({ error: 'Duplicated e-mail' });
+    }
     const user = await User.create(req.body);
 
     return res.json(user);
